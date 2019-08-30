@@ -18,25 +18,15 @@ import {
 import { getWorkspace } from '@schematics/angular/utility/config';
 import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
 
+
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
-export function setupOptions(tree: Tree, options: any): Tree {
-  const workspace = getWorkspace(tree);
-  if (!options.project) {
-    options.project = Object.keys(workspace.projects)[0];
-  }
-  const project = workspace.projects[options.project];
-
-  options.path = join(normalize(project.root), 'src');
-  return tree;
-}
-
 export function projectMap(options: any): Rule {
-    return chain([
-      copyModuleFiles(options),
-      addModuleImport(options),
-      removeComponentPlaceholder(options)
-    ]);
+  return chain([
+    copyModuleFiles(options),
+    addModuleImport(options),
+    removeComponentPlaceholder(options)
+  ]);
 }
 
 function copyModuleFiles(options: any): Rule {
@@ -92,4 +82,15 @@ function removeComponentPlaceholder(options: any): Rule {
 
     return tree;
   }
+}
+
+function setupOptions(tree: Tree, options: any): Tree {
+  const workspace = getWorkspace(tree);
+  if (!options.project) {
+    options.project = Object.keys(workspace.projects)[0];
+  }
+  const project = workspace.projects[options.project];
+
+  options.path = join(normalize(project.root), 'src');
+  return tree;
 }
