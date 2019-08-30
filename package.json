@@ -1,7 +1,7 @@
 {
-  "name": "project-map",
-  "version": "0.0.0",
-  "description": "A blank schematics",
+  "name": "scaffular",
+  "version": "0.0.3",
+  "description": "Angular scaffolding via interactive project map",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && jasmine src/**/*_spec.js"

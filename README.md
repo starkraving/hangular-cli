@@ -1,2 +1,3 @@
-# hangular-cli
-Schematics command line interface for Hangular
+# scaffular
+
+Command-line scaffolding of Angular projects via interactive project map
