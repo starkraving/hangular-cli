@@ -1,0 +1,54 @@
+<section>
+  <h1>Current url: {{ currentURL }}</h1>
+  <p>
+    {{ routeFound ? routeProperties.description : 'Route not defined' }}
+  </p>
+
+  <div *ngIf="visibleForm === undefined; else visibleFormProps">
+    <div id="controls">
+      <button type="button" (click)="_toggleEditing()">Edit Properties</button>
+      <button type="button" (click)="_export()">Export Project JSON</button>
+      <button type="button" (click)="_reset()">Reset</button>
+    </div>
+    <div *ngIf="routeFound">
+      <h3 *ngIf="routeProperties.forms && routeProperties.forms.length">Forms</h3>
+      <ng-form *ngFor="let form of routeProperties.forms; let f = index;">
+        <div class="pageForm">
+          <div *ngFor="let inputHTML of getInputMocks(f)" [innerHTML]="inputHTML | safeHtml"></div>
+          <button type="button" (click)="_showForm(f)">{{ form.action.button.label }}</button>
+        </div>
+      </ng-form>
+
+      <h3 *ngIf="routeProperties.exits && routeProperties.exits.length">Exits</h3>
+      <ul *ngIf="routeProperties.exits">
+        <li *ngFor="let exit of routeProperties.exits">
+          <a [routerLink]="exit.route">{{ exit.visibleText }}</a>
+        </li>
+      </ul>
+    </div>
+
+    <h3 *ngIf="globalExits">Global Exits</h3>
+    <ul *ngIf="globalExits">
+      <li *ngFor="let exit of globalExits">
+        <a [routerLink]="exit.route">{{ exit.visibleText }}</a>
+      </li>
+    </ul>
+  </div>
+  <ng-template #visibleFormProps>
+    <h3>{{ routeProperties.forms[visibleForm].action.name }}</h3>
+    <p>{{ routeProperties.forms[visibleForm].action.description }}</p>
+    <div>
+      <button type="button" *ngIf="routeProperties.forms[visibleForm].action.exit"
+              (click)="router.navigate([routeProperties.forms[visibleForm].action.exit.route])">
+        Navigate to {{ routeProperties.forms[visibleForm].action.exit.route }}
+      </button>
+      <button *ngIf="!routeProperties.forms[visibleForm].action.exit"
+              (click)="_showForm(undefined)">Finished
+      </button>
+      <div id="controls">
+        <button (click)="_toggleEditing()">Edit Form</button>
+      </div>
+    </div>
+  </ng-template>
+
+</section>

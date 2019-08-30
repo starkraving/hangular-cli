@@ -2,8 +2,13 @@
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "project-map": {
-      "description": "A blank schematic.",
+      "description": "Adds the dynamic project map module to an Angular app",
       "factory": "./project-map/index#projectMap"
+    },
+    "ng-add": {
+      "factory": "./ng-add/index",
+      "description": "Add schematic",
+      "aliases": ["install"]
     }
   }
 }

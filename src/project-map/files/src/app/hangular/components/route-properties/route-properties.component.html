@@ -1,0 +1,106 @@
+<section>
+  <form *ngIf="visibleForm === undefined" [formGroup]="routePropsForm" (ngSubmit)="_saveChanges()">
+    <h1>Current url: {{ currentURL }}</h1>
+    <div>
+      <textarea id="description" formControlName="description"></textarea>
+    </div>
+
+    <h3>Forms</h3>
+    <div formArrayName="forms" *ngFor="let form of routePropsForm.get('forms').controls; let fIdx = index">
+      <div [formGroupName]="fIdx">
+        <label>
+          Exit Type:
+          <select formControlName="exitType">
+            <option *ngFor="let type of exitTypes" [ngValue]="type">{{ type }}</option>
+          </select>
+        </label>
+        <label>
+          Button Text:
+          <input type="text" formControlName="visibleText" (keyup)="_addFormProp(fIdx)">
+        </label>
+        <label>
+          Action:
+          <input type="text" formControlName="action">
+        </label>
+      </div>
+    </div>
+
+    <h3>Exits</h3>
+    <div formArrayName="exits" *ngFor="let exit of routePropsForm.get('exits').controls; let idx = index">
+      <div [formGroupName]="idx">
+        <label>
+          Exit Type:
+          <select formControlName="exitType">
+            <option *ngFor="let type of exitTypes" [ngValue]="type">{{ type }}</option>
+          </select>
+        </label>
+        <label>
+          Link Text:
+          <input type="text" formControlName="visibleText" (keyup)="_addExitProp(idx)">
+        </label>
+        <label>
+          Route:
+          <input type="text" formControlName="action">
+        </label>
+      </div>
+    </div>
+
+    <button type="button" (click)="_toggleEditing()">Cancel</button>
+    <button type="submit">Save Changes</button>
+  </form>
+  <form *ngIf="visibleForm !== undefined" [formGroup]="formPropsForm" (ngSubmit)="_saveFormChanges()">
+    <h1>Current url: {{ currentURL }}</h1>
+    <div formGroupName="action">
+      <div>
+        <label>
+          Action Name:
+          <input type="text" formControlName="name">
+        </label>
+      </div>
+      <div>
+        <label>
+          Description: <br>
+          <textarea id="description" formControlName="description"></textarea>
+        </label>
+      </div>
+      <div>
+        <label>
+          Button Text:
+          <input type="text" formControlName="button">
+        </label>
+      </div>
+      <div>
+        <label>
+          Redirect to:
+          <input type="text" formControlName="exit">
+        </label>
+      </div>
+    </div>
+    <h3>Form Inputs</h3>
+    <div formArrayName="inputs" *ngFor="let input of formPropsForm.get('inputs').controls; let ff = index">
+      <div [formGroupName]="ff">
+        <label>
+          Input type:
+          <select formControlName="type">
+            <option *ngFor="let type of inputTypes" [ngValue]="type">{{ type }}</option>
+          </select>
+        </label>
+        <label>
+          Label Text:
+          <input type="text" formControlName="label" (keyup)="_addInputProp(ff)">
+        </label>
+        <label>
+          Value:
+          <input type="text" formControlName="value">
+        </label>
+        <label>
+          Attributes:
+          <input type="text" formControlName="attributes">
+        </label>
+      </div>
+    </div>
+
+    <button type="button" (click)="_toggleEditing()">Cancel</button>
+    <button type="submit">Save Changes</button>
+  </form>
+</section>
