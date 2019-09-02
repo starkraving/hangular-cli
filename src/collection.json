@@ -9,6 +9,10 @@
       "factory": "./ng-add/index",
       "description": "Add schematic",
       "aliases": ["install"]
+    },
+    "ng-generate": {
+      "factory": "./ng-generate/index",
+      "description": "Generates the scaffolded routes and components"
     }
   }
 }

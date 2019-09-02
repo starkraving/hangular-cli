@@ -1,4 +1,4 @@
-import { join, normalize } from '@angular-devkit/core';
+import { normalize } from '@angular-devkit/core';
 import {
   apply, chain, FileEntry, forEach,
   MergeStrategy,
@@ -17,6 +17,7 @@ import {
 } from '@angular/cdk/schematics';
 import { getWorkspace } from '@schematics/angular/utility/config';
 import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
+import { setupOptions } from '../common';
 
 
 // You don't have to export the function as default. You can also have more than one rule factory
@@ -82,15 +83,4 @@ function removeComponentPlaceholder(options: any): Rule {
 
     return tree;
   }
-}
-
-function setupOptions(tree: Tree, options: any): Tree {
-  const workspace = getWorkspace(tree);
-  if (!options.project) {
-    options.project = Object.keys(workspace.projects)[0];
-  }
-  const project = workspace.projects[options.project];
-
-  options.path = join(normalize(project.root), 'src');
-  return tree;
 }
