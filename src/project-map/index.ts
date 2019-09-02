@@ -51,8 +51,8 @@ function copyModuleFiles(options: any): Rule {
 
 function addModuleImport(options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
-    const IMPORT_IDENTIFIER = 'HangularModule';
-    const IMPORT_PATH = './hangular/hangular.module';
+    const IMPORT_IDENTIFIER = 'ScaffularModule';
+    const IMPORT_PATH = './scaffular/scaffular.module';
     const workspace = getWorkspace(tree);
     const project = getProjectFromWorkspace(workspace, options.project);
     const appModulePath = getAppModulePath(tree, getProjectMainFile(project));
