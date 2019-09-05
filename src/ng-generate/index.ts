@@ -6,13 +6,19 @@ import {
     getProjectMainFile,
     hasNgModuleImport
 } from '@angular/cdk/schematics';
-import { addRouteDeclarationToModule, insertImport } from '@schematics/angular/utility/ast-utils';
+import {
+    addDeclarationToModule,
+    addRouteDeclarationToModule,
+    insertImport
+} from '@schematics/angular/utility/ast-utils';
 import { InsertChange } from '@schematics/angular/utility/change';
 import { getWorkspace } from '@schematics/angular/utility/config';
 import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
 import * as ts from 'typescript';
 import { setupOptions, makeComponentNameFromRoute } from '../common';
 import { RouteComponentBuilder } from '../project-map/files/src/app/scaffular/model/builders/route-component-builder';
+import { RouteTemplateBuilder } from '../project-map/files/src/app/scaffular/model/builders/route-template-builder';
+import { RouteProperties } from '../project-map/files/src/app/scaffular/model/route-properties';
 
 export default function(options: any): Rule {
     return chain([
@@ -29,15 +35,24 @@ function updateRoutingModule(options: any): Rule {
         const workspace = getWorkspace(tree);
         const project = getProjectFromWorkspace(workspace, options.project);
         const appRouterPath = project.sourceRoot + '/app/app-routing.module.ts';
-        const content: Buffer | null = tree.read(appRouterPath);
+        const routerContent: Buffer | null = tree.read(appRouterPath);
         const appModulePath = getAppModulePath(tree, getProjectMainFile(project));
+        const moduleContent: Buffer | null = tree.read(appModulePath);
 
-        let strContent = '';
-        if ( content ) {
-            strContent = content.toString();
+        let strRouterContent = '';
+        if ( routerContent ) {
+            strRouterContent = routerContent.toString();
         }
-        const source = ts.createSourceFile(appRouterPath, strContent, ts.ScriptTarget.Latest, true);
-        let changes = [];
+
+        let strModuleContent = '';
+        if ( moduleContent ) {
+            strModuleContent = moduleContent.toString();
+        }
+        const source = ts.createSourceFile(appRouterPath, strRouterContent, ts.ScriptTarget.Latest, true);
+        const moduleSource = ts.createSourceFile(appModulePath, strModuleContent, ts.ScriptTarget.Latest, true);
+        let routerChanges = [];
+        let moduleChanges = [];
+        let hasForms = false;
         for ( let r = 0 ; r < projectMap.routes.length ; r++ ) {
             let routeProps = projectMap.routes[r];
             let route = routeProps.route;
@@ -48,19 +63,38 @@ function updateRoutingModule(options: any): Rule {
             {path: '${route}', component: ${componentName}},`;
 
             if ( !hasNgModuleImport(tree, appModulePath, componentName) ) {
-                addModuleImportToRootModule(tree, componentName, componentPath, project);
-                changes.push(addRouteDeclarationToModule(source, appRouterPath, routeLiteral));
-                changes.push(insertImport(source, appRouterPath, componentName, componentPath));
+                moduleChanges.push(addDeclarationToModule(moduleSource, appModulePath, componentName, componentPath));
+                routerChanges.push(addRouteDeclarationToModule(source, appRouterPath, routeLiteral));
+                routerChanges.push(insertImport(source, appRouterPath, componentName, componentPath));
+            }
+
+            if ( routeProps.forms.length ) {
+                hasForms = true;
             }
         }
 
-        const exportRecorder = tree.beginUpdate(appRouterPath);
-        for (const change of changes) {
+        const routerRecorder = tree.beginUpdate(appRouterPath);
+        for (const change of routerChanges) {
             if (change instanceof InsertChange) {
-                exportRecorder.insertLeft(change.pos, change.toAdd);
+                routerRecorder.insertLeft(change.pos, change.toAdd);
             }
         }
-        tree.commitUpdate(exportRecorder);
+        tree.commitUpdate(routerRecorder);
+
+        const moduleRecorder = tree.beginUpdate(appModulePath);
+        for ( const changes of moduleChanges ) {
+            for ( const change of changes ) {
+                if ( change instanceof InsertChange ) {
+                    moduleRecorder.insertLeft(change.pos, change.toAdd);
+                }
+            }
+        }
+        tree.commitUpdate(moduleRecorder);
+
+        if ( hasForms ) {
+            addModuleImportToRootModule(tree, 'ReactiveFormsModule', '@angular/forms', project);
+        }
+
         return tree;
     }
 }
@@ -121,6 +155,13 @@ function generateComponents(options: any): Rule {
             } else {
                 tree.overwrite(componentPath, componentBuilder.toString());
             }
+            const templatePath = project.sourceRoot + `/app/components/${routeProps.dasherizedName}/${routeProps.dasherizedName}.component.html`;
+            const templateBuilder = new RouteTemplateBuilder(routeProps);
+            if ( !tree.exists(templatePath) ) {
+                tree.create(templatePath, templateBuilder.toString());
+            } else {
+                tree.overwrite(templatePath, templateBuilder.toString());
+            }
         });
         return tree;
     }
@@ -137,6 +178,17 @@ function readProjectMap(tree: Tree, options: any) {
             globalExits: []
         };
     }
-    return JSON.parse(content.toString());
+    return fixProjectMap(JSON.parse(content.toString()));
+}
+
+function fixProjectMap(projectMap: any) {
+    projectMap.routes = projectMap.routes.map((routeProp: RouteProperties) => {
+        if ( routeProp.route.charAt(0) === '/' ) {
+            routeProp.route = routeProp.route.substring(1);
+        }
+        return routeProp;
+    });
+
+    return projectMap;
 }
 
