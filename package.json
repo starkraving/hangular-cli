@@ -1,6 +1,6 @@
 {
   "name": "scaffular",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Angular scaffolding via interactive project map",
   "scripts": {
     "build": "tsc -p tsconfig.json",

@@ -1,3 +1,4 @@
+import { strings } from '@angular-devkit/core';
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 import {
     addModuleImportToRootModule,
@@ -5,18 +6,19 @@ import {
     getProjectMainFile,
     hasNgModuleImport
 } from '@angular/cdk/schematics';
-import { addRouteDeclarationToModule } from '@schematics/angular/utility/ast-utils';
+import { addRouteDeclarationToModule, insertImport } from '@schematics/angular/utility/ast-utils';
 import { InsertChange } from '@schematics/angular/utility/change';
 import { getWorkspace } from '@schematics/angular/utility/config';
 import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
 import * as ts from 'typescript';
-import { makeComponentNameFromRoute, makeDasherizedComponentFromRoute, setupOptions } from '../common';
+import { setupOptions, makeComponentNameFromRoute } from '../common';
+import { RouteComponentBuilder } from '../project-map/files/src/app/scaffular/model/builders/route-component-builder';
 
 export default function(options: any): Rule {
     return chain([
         updateRoutingModule(options),
         updateAppTemplate(options),
-        //generateComponents(options)
+        generateComponents(options)
     ]);
 }
 
@@ -39,15 +41,16 @@ function updateRoutingModule(options: any): Rule {
         for ( let r = 0 ; r < projectMap.routes.length ; r++ ) {
             let routeProps = projectMap.routes[r];
             let route = routeProps.route;
-            let componentName = makeComponentNameFromRoute(route);
-            let dasherizedComponent = makeDasherizedComponentFromRoute(route);
-            let componentPath = `./components/${dasherizedComponent}/${componentName}`;
+            let componentName = routeProps.componentName || makeComponentNameFromRoute(route);
+            let dasherizedComponent = strings.dasherize(componentName.replace(/Component$/, ''));
+            let componentPath = `./components/${dasherizedComponent}/${dasherizedComponent}.component`;
             let routeLiteral = `
             {path: '${route}', component: ${componentName}},`;
 
             if ( !hasNgModuleImport(tree, appModulePath, componentName) ) {
                 addModuleImportToRootModule(tree, componentName, componentPath, project);
                 changes.push(addRouteDeclarationToModule(source, appRouterPath, routeLiteral));
+                changes.push(insertImport(source, appRouterPath, componentName, componentPath));
             }
         }
 
@@ -100,12 +103,28 @@ function updateAppTemplate(options: any): Rule {
         return tree;
     }
 }
-/*
+
 function generateComponents(options: any): Rule {
     return (tree: Tree, _context: SchematicContext) => {
+        setupOptions(tree, options);
+        const projectMap = readProjectMap(tree, options);
+        const workspace = getWorkspace(tree);
+        const project = getProjectFromWorkspace(workspace, options.project);
+
+        projectMap.routes.forEach((routeProps: any) => {
+            routeProps.componentName = routeProps.componentName || makeComponentNameFromRoute(routeProps.route);
+            routeProps.dasherizedName = strings.dasherize(routeProps.componentName.replace(/Component$/, ''));
+            const componentPath = project.sourceRoot + `/app/components/${routeProps.dasherizedName}/${routeProps.dasherizedName}.component.ts`;
+            const componentBuilder = new RouteComponentBuilder(routeProps);
+            if ( !tree.exists(componentPath) ) {
+                tree.create(componentPath, componentBuilder.toString());
+            } else {
+                tree.overwrite(componentPath, componentBuilder.toString());
+            }
+        });
         return tree;
     }
-}*/
+}
 
 function readProjectMap(tree: Tree, options: any) {
     const workspace = getWorkspace(tree);
