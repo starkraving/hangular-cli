@@ -1,6 +1,6 @@
 {
   "name": "scaffular",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Angular scaffolding via interactive project map",
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -25,6 +25,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/starkraving/hangular-cli.git"
+    "url": "https://github.com/starkraving/scaffular.git"
   }
 }
