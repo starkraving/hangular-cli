@@ -7,7 +7,7 @@ Did it help? Consider donating some of your savings towards further enhancements
 
 ### Summary
 
-One of the toughest hurdles faced by Angular application developers is the "white screen of death"; it happens when you're just starting the project and haven't mapped it out fully --- or at all. Scaffular helps by giving you a browser-based interface to scope out the project's routes, including forms and form fields, links that will be visible on that route's screen, and links that will be visible on all screens. This has the added benefit of allowing you to preview the project with stakeholders before development starts in earnest, providing them a fast and interactive way to give feedback when it's most critical.
+One of the toughest hurdles faced by Angular application developers is the "white screen of death"; it happens when you're just starting the project and haven't mapped it out fully --- or at all. Scaffular helps by giving you a browser-based interface to scope out the project's routes, including forms and form fields, links that will be visible on that route's screen, and links that will be visible on all screens. This has the added benefit of allowing you to preview the project with stakeholders before development starts in earnest, providing them with a fast and interactive way to give feedback when it's most critical.
 
 When you're satisfied that you have the project mapped out, a single `ng generate` command will register all your routes in app-router.module, register your components with app.module, update the outer app template with your defined global links, and generate component files and template files for each route, including route parameters, and reactive forms with all your fields. You can then `ng serve` the project and continue developing as you would normally.
 
@@ -52,7 +52,7 @@ Hit the save button to save your changes and return to the details screen for th
 
 #### Editing the properties of a form
 
-You can edit the forms of any route that's been defined by clicking on the form's submit button, and then clicking the edit button on the right hand side of the screen. You'll see a space you can use to explain what should when the user submits the form, as well as a space to enter the properties for one or more form fields.
+You can edit the forms of any route that's been defined by clicking on the form's submit button, and then clicking the edit button on the right hand side of the screen. You'll see a space you can use to explain what should happen when the user submits the form, as well as a space to enter the properties for one or more form fields.
 
 Use the dropdown to specify the field's input type. You can also define a text label for the field, and a default value as well. For "select" type inputs, use commas in the value to generate the individual options in the select box. For example a select box with a label of "Country" might have a value of "USA,Canada,Etc,Etc". For "radio" or "checkbox" inputs, a comma-separated value will be used to generate the individual radio buttons or check boxes, with the label text for each option. When you start typing in the last row of fields, a new row will automatically be added so you should always have enough for your form.
 
