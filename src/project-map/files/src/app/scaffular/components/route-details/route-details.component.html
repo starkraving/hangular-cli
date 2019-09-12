@@ -5,11 +5,6 @@
   </p>
 
   <div *ngIf="visibleForm === undefined; else visibleFormProps">
-    <div id="controls">
-      <button type="button" (click)="_toggleEditing()">Edit Properties</button>
-      <button type="button" (click)="_export()">Export Project JSON</button>
-      <button type="button" (click)="_reset()">Reset</button>
-    </div>
     <div *ngIf="routeFound">
       <h3 *ngIf="routeProperties.forms && routeProperties.forms.length">Forms</h3>
       <ng-form *ngFor="let form of routeProperties.forms; let f = index;">
@@ -45,9 +40,6 @@
       <button *ngIf="!routeProperties.forms[visibleForm].action.exit"
               (click)="_showForm(undefined)">Finished
       </button>
-      <div id="controls">
-        <button (click)="_toggleEditing()">Edit Form</button>
-      </div>
     </div>
   </ng-template>
 

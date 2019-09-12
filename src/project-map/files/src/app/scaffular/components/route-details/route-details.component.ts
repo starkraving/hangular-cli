@@ -16,9 +16,6 @@ export class RouteDetailsComponent implements OnInit {
   @Input() visibleForm: any;
   @Input() globalExits: Exit[];
 
-  @Output() toggleEditing = new EventEmitter();
-  @Output() export = new EventEmitter();
-  @Output() reset = new EventEmitter();
   @Output() showForm = new EventEmitter<number>();
 
   constructor(
@@ -26,18 +23,6 @@ export class RouteDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-  }
-
-  _toggleEditing() {
-    this.toggleEditing.emit();
-  }
-
-  _export() {
-    this.export.emit();
-  }
-
-  _reset() {
-    this.reset.emit();
   }
 
   _showForm(formIndex: number) {

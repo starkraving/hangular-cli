@@ -1,12 +1,20 @@
+<div id="controls">
+  <div *ngIf="visibleForm === undefined">
+    <button type="button" (click)="toggleEditing()">Edit Properties</button>
+    <button type="button" (click)="export()">Export Project JSON</button>
+    <button type="button" (click)="reset()">Reset</button>
+  </div>
+  <div *ngIf="visibleForm !== undefined">
+    <button (click)="toggleEditing()">Edit Form</button>
+  </div>
+</div>
+
 <app-route-details *ngIf="!editing"
   [currentURL]="currentURL"
   [routeFound]="routeFound"
   [routeProperties]="routeProperties"
   [visibleForm]="visibleForm"
   [globalExits]="globalExits"
-  (toggleEditing)="toggleEditing()"
-  (export)="export()"
-  (reset)="reset()"
   (showForm)="showForm($event)"
 >
 </app-route-details>
