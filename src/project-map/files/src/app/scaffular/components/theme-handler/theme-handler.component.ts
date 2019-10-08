@@ -39,16 +39,30 @@ export class ThemeHandlerComponent implements OnInit {
       }
     });
 
-    templateProps.items.forEach((item: any) => {
-      if ( item.type === 'forms' ) {
-        this.formLocations.push(item.value);
-      } else {
-        this.exitLocations.push(item.value);
-      }
-    });
+    this.getLocations();
   }
 
   ngOnInit() {}
+
+  private getLocations() {
+    if ( templateProps.hasOwnProperty('items') ) {
+      templateProps.items.forEach((item: any) => {
+        if ( item.type === 'forms' ) {
+          this.formLocations.push(item.value);
+        } else {
+          this.exitLocations.push(item.value);
+        }
+      });
+    } else {
+      Object.keys(templateProps).forEach((key: string) => {
+        if ( key.indexOf('forms-') === 0 ) {
+          this.formLocations.push(key.replace('forms-', ''));
+        } else if ( key.indexOf('links-') === 0 ) {
+          this.exitLocations.push(key.replace('links-', ''));
+        }
+      });
+    }
+  }
 
   private setUp() {
     this.visibleForm = undefined;

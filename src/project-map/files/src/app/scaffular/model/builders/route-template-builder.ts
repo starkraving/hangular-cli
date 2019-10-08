@@ -127,11 +127,11 @@ export class RouteTemplateBuilder {
 
   private getRouteLink(route: string) {
     let exitRoute = route.split('?')[0];
-    if ( exitRoute.indexOf('/') === 0 ) {
-      exitRoute = exitRoute.substring(1);
+    if ( exitRoute.indexOf('/') !== 0 ) {
+      exitRoute = `/${exitRoute}`;
     }
 
-    return exitRoute;
+    return exitRoute.replace(/\/:/g, '/');
   }
 
   protected getFoundForms() {
