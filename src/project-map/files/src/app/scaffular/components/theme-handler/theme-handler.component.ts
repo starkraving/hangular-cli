@@ -4,6 +4,7 @@ import { Form } from '../../model/form';
 import { FormInput } from '../../model/form-input';
 import { RouteProperties } from '../../model/route-properties';
 import { RoutePropertiesFromForm } from '../../model/builders/route-properties-from-form';
+import templateProps from '../../prototype/templateProps.json';
 import { ProjectMapService } from '../../service/project-map.service';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { Exit } from '../../model/exit';
@@ -21,7 +22,9 @@ export class ThemeHandlerComponent implements OnInit {
   routeProperties: RouteProperties;
   routePropsForm: FormGroup;
   formPropsForm: FormGroup;
-  visibleForm: number;
+  visibleForm: Form;
+  formLocations: string[] = [];
+  exitLocations: string[] = [];
 
   constructor(
     private router: Router,
@@ -31,8 +34,16 @@ export class ThemeHandlerComponent implements OnInit {
     ) {
     this.router.events.subscribe(event => {
       if ( event instanceof NavigationEnd) {
-        this.currentURL = this.projectMap.normalizeRoute(event.urlAfterRedirects);
+        this.currentURL = (this.projectMap.normalizeRoute(event.urlAfterRedirects)).split('?')[0];
         this.setUp();
+      }
+    });
+
+    templateProps.items.forEach((item: any) => {
+      if ( item.type === 'forms' ) {
+        this.formLocations.push(item.value);
+      } else {
+        this.exitLocations.push(item.value);
       }
     });
   }
@@ -53,12 +64,18 @@ export class ThemeHandlerComponent implements OnInit {
 
   toggleEditing() {
     this.editing = !this.editing;
+    const self = this;
+    setTimeout(() => {
+      if ( !self.editing ) {
+        self.visibleForm = undefined;
+      }
+    }, 0);
   }
 
-  showForm(formIndex: any) {
-    this.visibleForm = formIndex;
-    if ( formIndex !== undefined ) {
-      this.loadFormPropsForm();
+  showForm(form: any) {
+    this.visibleForm = form;
+    if ( form !== undefined ) {
+      this.loadFormPropsForm(form);
     } else {
       this.formPropsForm = undefined;
     }
@@ -73,8 +90,7 @@ export class ThemeHandlerComponent implements OnInit {
     });
   }
 
-  private loadFormPropsForm() {
-    const formProps = this.routeProperties.forms[this.visibleForm];
+  private loadFormPropsForm(formProps: Form) {
     this.formPropsForm = this.formBuilder.group({
       action: this.formBuilder.group({
         name: formProps.action.name,
@@ -105,9 +121,10 @@ export class ThemeHandlerComponent implements OnInit {
   saveFormChanges() {
     this.toggleEditing();
 
-    this.routeProperties.forms[this.visibleForm].action.name = this.formPropsForm.get('action.name').value;
-    this.routeProperties.forms[this.visibleForm].action.description = this.formPropsForm.get('action.description').value;
-    this.routeProperties.forms[this.visibleForm].action.button = {
+    const idx = this.visibleForm.index;
+    this.routeProperties.forms[idx].action.name = this.formPropsForm.get('action.name').value;
+    this.routeProperties.forms[idx].action.description = this.formPropsForm.get('action.description').value;
+    this.routeProperties.forms[idx].action.button = {
       type: 'button',
       label: this.formPropsForm.get('action.button').value,
       attributes: ''
@@ -116,16 +133,16 @@ export class ThemeHandlerComponent implements OnInit {
     const exitRoute = this.formPropsForm.get('action.exit').value;
     const normalizedExitRoute = this.projectMap.normalizeRoute(exitRoute);
     if ( exitRoute.length > 0 && normalizedExitRoute !== this.currentURL ) {
-      this.routeProperties.forms[this.visibleForm].action.exit = {
+      this.routeProperties.forms[idx].action.exit = {
         visibleText: '',
         route: normalizedExitRoute,
         routeLocations: ['']
       } as Exit;
     } else {
-      delete this.routeProperties.forms[this.visibleForm].action.exit;
+      delete this.routeProperties.forms[idx].action.exit;
     }
 
-    this.routeProperties.forms[this.visibleForm].inputs = this.formPropsForm.get('inputs').value.filter((input: FormInput) => {
+    this.routeProperties.forms[idx].inputs = this.formPropsForm.get('inputs').value.filter((input: FormInput) => {
       return input.label !== '' || input.value !== '' || input.attributes !== '';
     }) as FormInput[];
 
@@ -164,11 +181,19 @@ export class ThemeHandlerComponent implements OnInit {
   }
 
   private makeExitProp(exitProps: Exit = null): FormGroup {
+    const selectedLocations = ( exitProps )
+      ? exitProps.routeLocations.map((loc: string) => (loc.length ? loc : 'general'))
+      : ['general'];
     return this.formBuilder.group({
       exitType: 'Link',
       action: exitProps ? exitProps.route : '',
       visibleText: exitProps ? exitProps.visibleText : '',
-      visibleLocations: exitProps ? exitProps.routeLocations : ['']
+      visibleLocations: this.formBuilder.array(
+        this.exitLocations.map((loc: string) => this.formBuilder.group({
+          label: loc,
+          selected: selectedLocations.indexOf(loc) > -1
+        }))
+      )
     });
   }
 
@@ -191,11 +216,19 @@ export class ThemeHandlerComponent implements OnInit {
   }
 
   private makeFormProp(formProps: Form = null): FormGroup {
+    const selectedLocations = ( formProps && formProps.action.exit && formProps.action.exit.routeLocations )
+      ? formProps.action.exit.routeLocations.map((loc: string) => (loc.length ? loc : 'general'))
+      : ['general'];
     return this.formBuilder.group({
       exitType: 'Form',
       action: formProps ? formProps.action.name : '',
       visibleText: formProps ? formProps.action.button.label : '',
-      visibleLocations: ['']
+      visibleLocations: this.formBuilder.array(
+        this.formLocations.map((loc: string) => this.formBuilder.group({
+          label: loc,
+          selected: selectedLocations.indexOf(loc) > -1
+        }))
+      )
     });
   }
 

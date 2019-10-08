@@ -1,6 +1,6 @@
 {
   "name": "scaffular",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "description": "Angular scaffolding via interactive project map",
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -17,9 +17,11 @@
     "@angular-devkit/schematics": "^8.3.2",
     "@angular/cdk": "^8.1.4",
     "@schematics/angular": "github:angular/schematics-angular-builds",
+    "@types/cheerio": "^0.22.13",
     "@types/jasmine": "^3.3.9",
     "@types/node": "^8.10.53",
     "chalk": "^2.4.2",
+    "cheerio": "^1.0.0-rc.3",
     "jasmine": "^3.3.1",
     "typescript": "~3.5.3"
   },

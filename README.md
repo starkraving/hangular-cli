@@ -78,4 +78,4 @@ This will update the existing app configurations to register your routes and com
 Development of Scaffular is ongoing, with some enhancements planned in the future. They include:
 
 * A "preflight" screen that will let you look at the generator output of the project and alter some of the properties before running the generator
-* A "theming" feature that will make it possible to do some basic prototyping of the application as well
+* A Node-based micro-service that will automatically save changes to your project map as you author, so you don't have to export it manually

@@ -1,84 +1,133 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormInput } from '../../model/form-input';
-import { RouteProperties } from '../../model/route-properties';
+import { Form } from '../../model/form';
 import { Exit } from '../../model/exit';
+import { getParamsAsObject } from '../../common/helpers';
+import templateProps from '../../prototype/templateProps.json';
+import { RouteTemplateBuilder } from '../../model/builders/route-template-builder';
 
 @Component({
   selector: 'app-route-details',
   templateUrl: './route-details.component.html',
   styleUrls: ['./route-details.component.scss']
 })
-export class RouteDetailsComponent implements OnInit {
+export class RouteDetailsComponent implements OnInit, OnChanges {
   @Input() currentURL: string;
+  @Input() routeProperties: any;
   @Input() routeFound: boolean;
-  @Input() routeProperties: RouteProperties;
   @Input() visibleForm: any;
   @Input() globalExits: Exit[];
 
-  @Output() showForm = new EventEmitter<number>();
+  @Output() showForm = new EventEmitter<Form>();
+
+  forms: {};
+  links: {};
+  description: string;
+  templateBuilder: RouteTemplateBuilder;
 
   constructor(
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
+    this.updateFromProps();
+    this.templateBuilder = new RouteTemplateBuilder(
+      ((this.routeProperties) ? this.routeProperties : RouteTemplateBuilder.defaultProps),
+      templateProps
+    );
   }
 
-  _showForm(formIndex: number) {
-    this.showForm.emit(formIndex);
+  ngOnChanges(changes: SimpleChanges): void {
+    if ( changes.hasOwnProperty('routeProperties') ) {
+      this.updateFromProps();
+    }
+    if ( changes.hasOwnProperty('visibleForm') ) {
+      this.showOrHideFormsAndLinks();
+    }
   }
 
-  getInputMocks(formIndex: number) {
-    const form = this.routeProperties.forms[formIndex];
-    const inputMocks = [] as string[];
-    form.inputs.forEach((input: FormInput, idx: number) => {
-      let tag = '';
-      let closeTag = '';
-      let innerHTML = '';
-      switch ( input.type ) {
-        case 'select' :
-          tag = '<label>' + input.label + ': <select';
-          if ( input.attributes.length > 0 ) {
-            tag += ' ' + input.attributes;
-          }
-          tag += '>';
-          innerHTML = input.value.split(',').map((value: string) => {
-            return '<option value="' + value + '">' + value + '</option>';
-          }).join('');
-          closeTag = '</select></label>';
-          break;
+  private updateFromProps() {
+    this.description = this.routeFound ? this.routeProperties.description : 'Route not defined';
+    this.loadFormLocations();
+    this.loadLinkLocations();
+  }
 
-        case 'radio' :
-        case 'checkbox' :
-          tag = '<dl><dt>' + input.label + ':</dt>';
-          innerHTML = input.value.split(',').map((value: string, vIdx: number) => {
-            const name = `form${formIndex}_${idx}`;
-            const id = `${name}_${vIdx}`;
-            let str = `<dd><input type="${input.type}" name="${name}" id="${id}"`;
-            if ( input.attributes.length > 0 ) {
-              str += ` ${input.attributes}`;
-            }
-            str += `> <label for="${id}">${value}</label></dd>`;
-            return str;
-          }).join('');
-          closeTag = '</dl>';
-          break;
+  private showOrHideFormsAndLinks() {
+    if ( this.visibleForm !== undefined ) {
+      this.forms = {};
+      this.links = {};
+    } else {
+      this.loadFormLocations();
+      this.loadLinkLocations();
+    }
+  }
 
-        default :
-          tag = '<label>' + input.label + ': <input type="' + input.type + '"';
-          if ( input.value.length > 0 ) {
-            tag += ' value="' + input.value + '"';
-          }
-          if ( input.attributes.length > 0 ) {
-            tag += ' ' + input.attributes;
-          }
-          tag += '>';
-          break;
+  private loadFormLocations() {
+    if ( !this.routeFound ) {
+      this.forms = {};
+      return;
+    }
+    const locations = {};
+    this.routeProperties.forms.forEach((form: Form, idx: number) => {
+      const locs = form.action.exit && form.action.exit.routeLocations ? form.action.exit.routeLocations : [];
+      if ( !locs.join('').length ) {
+        locs.push('general');
       }
-      inputMocks.push(tag + innerHTML + closeTag);
+      const newForm = { ...form };
+      newForm.index = idx;
+      locs.forEach((loc: string) => {
+        if ( !(locations.hasOwnProperty(loc)) ) {
+          locations[loc] = [];
+        }
+        locations[loc].push(newForm);
+      });
     });
-    return inputMocks;
+    this.forms = locations;
+  }
+
+  private loadLinkLocations() {
+    const locations = {};
+    const addLinkToLocation = (linkType: string) => {
+      return (exit: Exit) => {
+        const newExit = { ...exit };
+        let locs = exit.routeLocations || [];
+        if ( !locs.join('').length ) {
+          locs = [linkType];
+        }
+        locs.forEach((loc: string) => {
+          if ( !locations.hasOwnProperty(loc) ) {
+            locations[loc] = [];
+          }
+          locations[loc].push(newExit);
+        });
+      };
+    };
+
+    this.globalExits.forEach(addLinkToLocation('global'));
+    if ( this.routeFound ) {
+      this.routeProperties.exits.forEach(addLinkToLocation('general'));
+    }
+    this.links = locations;
+  }
+
+  _showForm(form: Form) {
+    this.showForm.emit(form);
+  }
+
+  getRouteLink(route: string) {
+    return route.split('?')[0];
+  }
+
+  getRouteParams(route: string) {
+    const parts = route.split('?');
+    if ( parts.length < 2 ) {
+      return {};
+    }
+    return getParamsAsObject(parts[1]);
+  }
+
+  getInputMocks(form: Form, location: string) {
+    return '';
   }
 
 

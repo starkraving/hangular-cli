@@ -13,6 +13,10 @@
     "ng-generate": {
       "factory": "./ng-generate/index",
       "description": "Generates the scaffolded routes and components"
+    },
+    "prototype": {
+      "factory": "./prototype/index",
+      "description": "Generates updated prototype props file and Angular component template"
     }
   }
 }

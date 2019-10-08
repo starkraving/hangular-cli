@@ -4,6 +4,7 @@ import { ProjectMapService } from '../../service/project-map.service';
 import { RouteComponentBuilder } from '../../model/builders/route-component-builder';
 import { makeComponentNameFromRoute, dasherize } from '../../common/helpers';
 import { RouteTemplateBuilder } from '../../model/builders/route-template-builder';
+import templateProps from '../../prototype/templateProps.json';
 
 @Component({
     selector: 'app-scaffular-preflight',
@@ -24,12 +25,12 @@ import { RouteTemplateBuilder } from '../../model/builders/route-template-builde
 
       if ( ['component', 'template'].indexOf(this.view) > -1 && this.routeIndex ) {
         if ( this.projectMap.projectData.routes.length > this.routeIndex ) {
-          let routeProps = this.projectMap.projectData.routes[this.routeIndex];
+          const routeProps = this.projectMap.projectData.routes[this.routeIndex];
           routeProps.componentName = routeProps.componentName || makeComponentNameFromRoute(routeProps.route);
           routeProps.dasherizedName = dasherize(routeProps.componentName.replace(/Component$/, ''));
-          const routeCodeBuilder = ( this.view === 'component' ) 
+          const routeCodeBuilder = ( this.view === 'component' )
             ? new RouteComponentBuilder(routeProps)
-            : new RouteTemplateBuilder(routeProps);
+            : new RouteTemplateBuilder(routeProps, templateProps);
           this.code = routeCodeBuilder.toString();
         }
       }

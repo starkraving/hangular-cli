@@ -18,6 +18,7 @@ import * as ts from 'typescript';
 import { setupOptions, makeComponentNameFromRoute } from '../common';
 import { RouteComponentBuilder } from '../project-map/files/src/app/scaffular/model/builders/route-component-builder';
 import { RouteTemplateBuilder } from '../project-map/files/src/app/scaffular/model/builders/route-template-builder';
+import { Exit } from '../project-map/files/src/app/scaffular/model/exit';
 import { RouteProperties } from '../project-map/files/src/app/scaffular/model/route-properties';
 
 export default function(options: any): Rule {
@@ -102,37 +103,25 @@ function updateRoutingModule(options: any): Rule {
 function updateAppTemplate(options: any): Rule {
     return (tree: Tree, _context: SchematicContext) => {
         const projectMap = readProjectMap(tree, options);
-        if ( projectMap.globalExits.length ) {
-            const workspace = getWorkspace(tree);
-            const project = getProjectFromWorkspace(workspace);
-            const appTemplatePath = project.sourceRoot + '/app/app.component.html';
-            const content: Buffer | null = tree.read(appTemplatePath);
-            let strContent = '';
-            if ( content ) {
-                strContent = content.toString();
-            }
-            let strNewContent = '';
-            for ( let r = 0 ; r < projectMap.globalExits.length ; r++ ) {
-                let strRouterLink = `routerLink="${projectMap.globalExits[r].route}"`;
-                let strLinkText = projectMap.globalExits[r].visibleText;
-                if ( strContent.indexOf(strRouterLink) === -1 ) {
-                    strNewContent += `
-                    <li><a ${strRouterLink}>${strLinkText}</a></li>`;
+        const workspace = getWorkspace(tree);
+        const project = getProjectFromWorkspace(workspace);
+        const appTemplatePath = project.sourceRoot + '/app/app.component.html';
+        const templateMap = readTemplateMap(tree, options);
+        const appProps: RouteProperties = {
+            route: '',
+            description: '',
+            forms: [],
+            exits: projectMap.globalExits.map((exit: Exit) => {
+                if ( !exit.routeLocations || exit.routeLocations.join('').length === 0 ) {
+                    exit.routeLocations = ['global'];
                 }
-            }
-            if ( strNewContent.length ) {
-                const strNewContentWrapper = '<h3>Global Exits</h3><ul>';
-                let pos = strContent.indexOf(strNewContentWrapper);
-                if ( pos === -1 ) {
-                    strContent = strContent.replace(
-                        '<router-outlet></router-outlet>',
-                        '<router-outlet></router-outlet>' + strNewContentWrapper);
-                    pos = strContent.indexOf(strNewContentWrapper);
-                }
-                pos = pos + strNewContentWrapper.length;
-                strContent = strContent.substring(0, pos) + strNewContent + strContent.substring(pos);
-                tree.overwrite(appTemplatePath, strContent);
-            }
+                return exit;
+            })
+        };
+        const appTemplateBuilder = new RouteTemplateBuilder(appProps, templateMap);
+        const strNewContent = appTemplateBuilder.outer();
+        if ( strNewContent.length ) {
+            tree.overwrite(appTemplatePath, strNewContent);
         }
         return tree;
     }
@@ -142,6 +131,7 @@ function generateComponents(options: any): Rule {
     return (tree: Tree, _context: SchematicContext) => {
         setupOptions(tree, options);
         const projectMap = readProjectMap(tree, options);
+        const templateMap = readTemplateMap(tree, options);
         const workspace = getWorkspace(tree);
         const project = getProjectFromWorkspace(workspace, options.project);
 
@@ -156,7 +146,7 @@ function generateComponents(options: any): Rule {
                 tree.overwrite(componentPath, componentBuilder.toString());
             }
             const templatePath = project.sourceRoot + `/app/components/${routeProps.dasherizedName}/${routeProps.dasherizedName}.component.html`;
-            const templateBuilder = new RouteTemplateBuilder(routeProps);
+            const templateBuilder = new RouteTemplateBuilder(routeProps, templateMap);
             if ( !tree.exists(templatePath) ) {
                 tree.create(templatePath, templateBuilder.toString());
             } else {
@@ -165,6 +155,22 @@ function generateComponents(options: any): Rule {
         });
         return tree;
     }
+}
+
+function readTemplateMap(tree: Tree, options: any) {
+    const workspace = getWorkspace(tree);
+    const project = getProjectFromWorkspace(workspace, options.project);
+    const templateMapFile = project.sourceRoot + '/app/scaffular/prototype/templateProps.json';
+    const content:Buffer | null = tree.read(templateMapFile);
+    if ( !content ) {
+        return {
+            type: 'template',
+            value: '',
+            wrapper: '',
+            items: []
+        };
+    }
+    return JSON.parse(content.toString());
 }
 
 function readProjectMap(tree: Tree, options: any) {

@@ -1,0 +1,257 @@
+{
+	"type": "template",
+	"value": "",
+	"wrapper": "\n<div class=\"app\">\n    <div class=\"nav-top d-flex justify-content-between\">\n      <img alt=\"Costco Logo\" src=\"/assets/images/costco-logo.png\" class=\"flex-column\">\n      {{ links-multi-search }}\n      <div class=\"flex-column\">\n        <a class=\"clickable settings\" ng-reflect-router-link=\"/admin/settings\" href=\"/admin/settings\">\n          <i class=\"material-icons\" aria-hidden=\"true\">settings</i> Settings </a>\n        <a class=\"logout-link clickable\">\n          <i class=\"material-icons\" aria-hidden=\"true\">exit_to_app</i> Logout </a>\n      </div>\n    </div>\n    {{ links-global }}\n    <main><!-- inner content start -->\n      <div class=\"container\">\n        {{ routeDetails }}\n      </div>\n      {{ forms-general }}\n      {{ links-general }}\n      {{ links-list-item }}\n    <!-- inner content end --></main>\n</div>\n",
+	"items": [
+		{
+			"type": "forms",
+			"value": "general",
+			"wrapper": "<div class=\"container\">\n        <h3>Forms</h3>\n        {{ repeat-form }}\n      </div>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "form",
+					"wrapper": "<form {{ attributes }}>\n          {{ repeat-inputMocks }}\n          <div class=\"row text-right\">\n            <button class=\"btn\" {{ btn_attributes }}>{{ visibleText }}</button>\n            {{ links-form-extra }}\n          </div>\n        </form>",
+					"items": [
+						{
+							"type": "repeat",
+							"value": "inputMocks",
+							"wrapper": "<div>\n            {{ repeat-input }}\n            {{ repeat-select }}\n            {{ repeat-option }}\n          </div>",
+							"items": [
+								{
+									"type": "repeat",
+									"value": "input",
+									"wrapper": "<div class=\"form-group container\">\n              <label class=\"row\">\n                {{ label }}\n                <input class=\"form-control\" {{ attributes }}>\n              </label>\n            </div>",
+									"items": []
+								},
+								{
+									"type": "repeat",
+									"value": "select",
+									"wrapper": "<div class=\"form-group container\">\n              <label class=\"row\">\n                {{ label }}\n                <select class=\"form-control\" {{ attributes }}>\n                  {{ repeat-value }}\n                </select>\n              </label>\n            </div>",
+									"items": [
+										{
+											"type": "repeat",
+											"value": "value",
+											"wrapper": "<option {{ attributes }}>{{ value }}</option>",
+											"items": []
+										}
+									]
+								},
+								{
+									"type": "repeat",
+									"value": "option",
+									"wrapper": "<div class=\"form-group container\">\n              {{ label }}\n              {{ repeat-value }}\n            </div>",
+									"items": [
+										{
+											"type": "repeat",
+											"value": "value",
+											"wrapper": "<div class=\"form-check\">\n                <label class=\"row\">\n                  <input class=\"form-check-input\" {{ attributes }}>\n                  {{ value }}\n                </label>\n              </div>",
+											"items": []
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "forms",
+			"value": "search",
+			"wrapper": "<div class=\"float-right\">\n            {{ repeat-form }}\n          </div>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "form",
+					"wrapper": "<form {{ attributes }}>\n              <div class=\"form-row\">\n                {{ repeat-inputMocks }}\n                <div class=\"col\">\n                  <button class=\"btn\" {{ btn_attributes }}>{{ visibleText }}</button>\n                </div>\n              </div>\n            </form>",
+					"items": [
+						{
+							"type": "repeat",
+							"value": "inputMocks",
+							"wrapper": "<span class=\"d-flex\">\n                    {{ repeat-input }}\n                    {{ repeat-select }}\n                    {{ repeat-option }}\n                </span>",
+							"items": [
+								{
+									"type": "repeat",
+									"value": "input",
+									"wrapper": "<div class=\"col\">\n                      <label>\n                        {{ label }}:\n                        <input class=\"form-control\" {{ attributes }}>\n                      </label>\n                    </div>",
+									"items": []
+								},
+								{
+									"type": "repeat",
+									"value": "select",
+									"wrapper": "<div class=\"col\">\n                      <label>\n                        {{ label }}:\n                        <select class=\"form-control\" {{ attributes }}>\n                          {{ repeat-value }}\n                        </select>\n                      </label>\n                    </div>",
+									"items": [
+										{
+											"type": "repeat",
+											"value": "value",
+											"wrapper": "<option {{ attributes }}>{{ value }}</option>",
+											"items": []
+										}
+									]
+								},
+								{
+									"type": "repeat",
+									"value": "option",
+									"wrapper": "<div class=\"col\">\n                      <dl>\n                        <dt>{{ label }}:</dt>\n                        {{ repeat-value }}\n                      </dl>\n                    </div>",
+									"items": [
+										{
+											"type": "repeat",
+											"value": "value",
+											"wrapper": "<dd>\n                          <input {{ attributes }}>\n                          {{ value }}\n                        </dd>",
+											"items": []
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "forms",
+			"value": "list-action",
+			"wrapper": "<td class=\"text-right\">\n              {{ repeat-form }}\n            </td>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "form",
+					"wrapper": "<form class=\"d-inline-block\" {{ attributes }}>\n                <div class=\"form-row\">\n                  {{ repeat-inputMocks }}\n                  <div class=\"col\">\n                    <button class=\"button\" {{ btn_attributes }}>{{ visibleText }}</button>\n                  </div>\n                </div>\n              </form>",
+					"items": [
+						{
+							"type": "repeat",
+							"value": "inputMocks",
+							"wrapper": "<span>\n                    {{ repeat-input }}\n                    {{ repeat-select }}\n                    {{ repeat-option }}\n                  </span>",
+							"items": [
+								{
+									"type": "repeat",
+									"value": "input",
+									"wrapper": "<div class=\"col\">\n                      <label>\n                        {{ label }}:\n                        <input {{ attributes }}>\n                      </label>\n                    </div>",
+									"items": []
+								},
+								{
+									"type": "repeat",
+									"value": "select",
+									"wrapper": "<div class=\"col\">\n                      <label>\n                        {{ label }}:\n                        <select {{ attributes }}>\n                          {{ repeat-value }}\n                        </select>\n                      </label>\n                    </div>",
+									"items": [
+										{
+											"type": "repeat",
+											"value": "value",
+											"wrapper": "<option {{ attributes }}>{{ value }}</option>",
+											"items": []
+										}
+									]
+								},
+								{
+									"type": "repeat",
+									"value": "option",
+									"wrapper": "<div class=\"col\">\n                      <dl>\n                        <dt>{{ label }}:</dt>\n                        {{ repeat-value }}\n                      </dl>\n                    </div>",
+									"items": [
+										{
+											"type": "repeat",
+											"value": "value",
+											"wrapper": "<dd>\n                          <input {{ attributes }}>\n                          {{ value }}\n                        </dd>",
+											"items": []
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "links",
+			"value": "multi-search",
+			"wrapper": "<div class=\"flex-column\">\n        {{ repeat-link }}\n      </div>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "link",
+					"wrapper": "<form ngnoform action=\"{{ exit.route }}\">\n          <input class=\"form-control d-inline w-auto\" type=\"search\" name=\"q\" accesskey=\"/\" list=\"search_presets\">\n          <button class=\"btn ml-1\" type=\"submit\">{{ visibleText }}</button>\n          <datalist id=\"search_presets\">\n            <option value=\"pending events\"></option>\n            <option value=\"flagged events\"></option>\n          </datalist>\n        </form>",
+					"items": []
+				}
+			]
+		},
+		{
+			"type": "links",
+			"value": "global",
+			"wrapper": "<div class=\"nav-bar\">\n      <nav>\n        <ul class=\"menu\">\n          {{ repeat-link }}\n        </ul>\n      </nav>\n    </div>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "link",
+					"wrapper": "<li>\n            <a {{ attributes }}>\n              <i class=\"material-icons\" aria-hidden=\"true\">dashboard</i>\n              <span>{{ visibleText }}</span>\n            </a>\n          </li>",
+					"items": []
+				}
+			]
+		},
+		{
+			"type": "links",
+			"value": "form-extra",
+			"wrapper": "<span>\n              {{ repeat-link }}\n            </span>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "link",
+					"wrapper": "<span>\n                <a class=\"btn btn-secondary ml-1\" {{ attributes }}>{{ visibleText }}</a>\n              </span>",
+					"items": []
+				}
+			]
+		},
+		{
+			"type": "links",
+			"value": "general",
+			"wrapper": "<div class=\"container\">\n        <h3>Exits</h3>\n        <ul>\n          {{ repeat-link }}\n        </ul>\n      </div>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "link",
+					"wrapper": "<li>\n            <a {{ attributes }}>{{ visibleText }}</a>\n          </li>",
+					"items": []
+				}
+			]
+		},
+		{
+			"type": "links",
+			"value": "list-item",
+			"wrapper": "<div>\n        <div class=\"admin-title\">\n          <h3 class=\"d-inline-block\">Items</h3>\n          {{ links-list-extra }}\n          {{ forms-search }}\n        </div>\n        <table class=\"table\">\n          <thead>\n          <tr>\n            <th>Column</th>\n            <th></th>\n          </tr>\n          </thead>\n          <tbody>\n          <tr>\n            {{ repeat-link }}\n            {{ forms-list-action }}\n            {{ links-list-action }}\n          </tr>\n          </tbody>\n        </table>\n      </div>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "link",
+					"wrapper": "<td>\n              <a {{ attributes }}>{{ visibleText }}</a>\n            </td>",
+					"items": []
+				}
+			]
+		},
+		{
+			"type": "links",
+			"value": "list-extra",
+			"wrapper": "<div class=\"extras float-right\">\n            {{ repeat-link }}\n          </div>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "link",
+					"wrapper": "<a class=\"btn btn-action ml-1\" {{ attributes }}>{{ visibleText }}</a>",
+					"items": []
+				}
+			]
+		},
+		{
+			"type": "links",
+			"value": "list-action",
+			"wrapper": "<td class=\"text-right\">\n              {{ repeat-link }}\n            </td>",
+			"items": [
+				{
+					"type": "repeat",
+					"value": "link",
+					"wrapper": "<a class=\"btn btn-action ml-1\" {{ attributes }}>{{ visibleText }}</a>",
+					"items": []
+				}
+			]
+		}
+	]
+}

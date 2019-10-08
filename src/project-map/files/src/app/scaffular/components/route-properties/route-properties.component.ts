@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import templateProps from '../../prototype/templateProps.json';
 
 @Component({
   selector: 'app-route-properties',
@@ -11,6 +12,8 @@ export class RoutePropertiesComponent implements OnInit {
   @Input() routePropsForm: FormGroup;
   @Input() currentURL: string;
   @Input() formPropsForm: FormGroup;
+  @Input() formLocations: string[];
+  @Input() exitLocations: string[];
 
   @Output() saveChanges = new EventEmitter();
   @Output() addFormProp = new EventEmitter<number>();
@@ -20,9 +23,7 @@ export class RoutePropertiesComponent implements OnInit {
   @Output() saveFormChanges = new EventEmitter();
 
   exitTypes: string[] = ['Form', 'Link', 'Global'];
-  inputTypes: string[] = ['text', 'email', 'number', 'range', 'url', 'password', 'select', 'radio', 'checkbox'];
-
-  constructor() { }
+  inputTypes: string[] = ['text', 'email', 'number', 'range', 'url', 'password', 'select', 'radio', 'checkbox', 'file'];
 
   ngOnInit() {
   }

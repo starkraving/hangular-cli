@@ -7,7 +7,7 @@
 
     <h3>Forms</h3>
     <div formArrayName="forms" *ngFor="let form of routePropsForm.get('forms').controls; let fIdx = index">
-      <div [formGroupName]="fIdx">
+      <div [formGroupName]="fIdx" [formGroup]="form">
         <label>
           Exit Type:
           <select formControlName="exitType">
@@ -22,12 +22,22 @@
           Action:
           <input type="text" formControlName="action">
         </label>
+        &nbsp; &nbsp;
+        Prototype:
+        <span formArrayName="visibleLocations">
+          <span *ngFor="let loc of form.controls.visibleLocations.controls; let lIdx = index;" [formGroup]="loc" style="margin-right: 1em;">
+            <label>
+              <input type="checkbox" [formControl]="loc.get('selected')">
+              {{ loc.get('label').value }}
+            </label>
+          </span>
+        </span>
       </div>
     </div>
 
     <h3>Exits</h3>
     <div formArrayName="exits" *ngFor="let exit of routePropsForm.get('exits').controls; let idx = index">
-      <div [formGroupName]="idx">
+      <div [formGroupName]="idx" [formGroup]="exit">
         <label>
           Exit Type:
           <select formControlName="exitType">
@@ -42,6 +52,16 @@
           Route:
           <input type="text" formControlName="action">
         </label>
+        &nbsp; &nbsp;
+        Prototype:
+        <span formArrayName="visibleLocations">
+          <span *ngFor="let loc of exit.controls.visibleLocations.controls; let lIdx = index;" [formGroup]="loc" style="margin-right: 1em;">
+            <label>
+              <input type="checkbox" [formControl]="loc.get('selected')">
+              {{ loc.get('label').value }}
+            </label>
+          </span>
+        </span>
       </div>
     </div>
 

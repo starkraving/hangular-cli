@@ -1,0 +1,56 @@
+<template>
+    <section>
+        <div sc-content>
+            {{ routeDetails }}
+            <div sc-forms="general">
+                <h3>Forms</h3>
+                <form sc-repeat="form" sc-injectable>
+                    <div class="pageForm">
+                        <div sc-repeat="inputMocks">
+                            <div sc-repeat="input">
+                                <label>
+                                    {{ label }}:
+                                    <input sc-injectable>
+                                </label>
+                            </div>
+                            <div sc-repeat="select">
+                                <label>
+                                    {{ label }}:
+                                    <select sc-injectable>
+                                        <option sc-repeat="value" sc-injectable>{{ value }}</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div sc-repeat="option">
+                                <dl>
+                                    <dt>{{ label }}:</dt>
+                                    <dd sc-repeat="value">
+                                        <input sc-injectable>
+                                        {{ value }}
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <button sc-injectable>{{ visibleText }}</button>
+                    </div>
+                </form>
+            </div>
+            <div sc-links="general">
+                <h3>Exits</h3>
+                <ul>
+                    <li sc-repeat="link">
+                        <a sc-injectable>{{ visibleText }}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div sc-links="global">
+            <h3>Global Exits</h3>
+            <ul>
+                <li sc-repeat="link">
+                    <a sc-injectable>{{ visibleText }}</a>
+                </li>
+            </ul>
+        </div>
+    </section>
+</template>
