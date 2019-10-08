@@ -70,3 +70,30 @@ export function getParamsAsObject(qs: string) {
   }
   return params;
 }
+
+export function getObjectAsString(obj: any): string {
+    switch ( typeof obj ) {
+        case 'string' :
+            return `'${obj}'`;
+        case 'number' :
+            return `$obj`;
+        case 'boolean' :
+            return ( obj ) ? 'true' : 'false';
+        default :
+            if ( Array.isArray(obj) ) {
+                return '['
+                    + obj.map((key: any) => getObjectAsString(key)).join(', ')
+                    + ']';
+            } else {
+                return '{'
+                    + Object.keys(obj).map((key: string) => {
+                        let returnKey = key;
+                        if ( returnKey.indexOf('-') ) {
+                            returnKey = `'${key}'`;
+                        }
+                        return key + ': ' + getObjectAsString(obj[key]);
+                    })
+                    + '}';
+            }
+    }
+}

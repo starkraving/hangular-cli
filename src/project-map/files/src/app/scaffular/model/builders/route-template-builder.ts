@@ -1,3 +1,4 @@
+import { getObjectAsString, getParamsAsObject } from '../../common/helpers';
 import { Exit } from '../exit';
 import { Form } from '../form';
 import { FormInput } from '../form-input';
@@ -106,11 +107,31 @@ export class RouteTemplateBuilder {
       RouteTemplateBuilder.makeLinkLocations(exit).forEach((loc: string) => {
         this.prepLocation(loc, 'repeat-link');
         this.foundProps[loc]['repeat-link'].push({
-          attributes: `[routerLink]="${exit.route}"`,
-          visibleText: exit.visibleText
+          attributes: this.makeExitAttributes(exit.route),
+          visibleText: exit.visibleText,
+          'exit.route': this.getRouteLink(exit.route)
         });
       });
     });
+  }
+
+  private makeExitAttributes(route: string) {
+    const parts = route.split('?');
+    const obj = ( parts.length < 2 ) ? undefined : getParamsAsObject(parts[1]);
+    const routerLink = `[routerLink]="['` + this.getRouteLink(parts[0]) + `']"`;
+    const queryParams = ( obj )
+        ? ' [queryParams]="' + getObjectAsString(obj) + '"'
+        : '';
+    return routerLink + queryParams;
+  }
+
+  private getRouteLink(route: string) {
+    let exitRoute = route.split('?')[0];
+    if ( exitRoute.indexOf('/') === 0 ) {
+      exitRoute = exitRoute.substring(1);
+    }
+
+    return exitRoute;
   }
 
   protected getFoundForms() {
