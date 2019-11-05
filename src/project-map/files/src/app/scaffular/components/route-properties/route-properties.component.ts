@@ -24,8 +24,11 @@ export class RoutePropertiesComponent implements OnInit {
 
   exitTypes: string[] = ['Form', 'Link', 'Global'];
   inputTypes: string[] = ['text', 'email', 'number', 'range', 'url', 'password', 'select', 'radio', 'checkbox', 'file'];
+  hasPrototype: boolean = false;
 
   ngOnInit() {
+    this.hasPrototype = ( ( this.formLocations.length !== 1 || this.formLocations[0].toLowerCase() !== 'general' ) &&
+      ( this.exitLocations.length !== 2 || this.exitLocations.indexOf('general') === -1 || this.exitLocations.indexOf('global') === -1 ));
   }
 
   _saveChanges() {

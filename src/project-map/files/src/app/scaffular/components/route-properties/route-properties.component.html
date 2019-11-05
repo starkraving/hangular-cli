@@ -3,33 +3,51 @@
     <h1>Current url: {{ currentURL }}</h1>
     <div>
       <textarea id="description" formControlName="description"></textarea>
+      <aside>
+        <p>
+          Use the textarea to give this route some descriptive text which will be readable when the user navigates
+          through the project. For example, "Displays a grid of product summaries, each with images, product name and price.
+        </p>
+        <p>
+          For forms, specify the visible button text, eg "Add to Cart", and the action. The action is the component
+          method that should be invoked when the button is clicked, eg "addToCart".
+        </p>
+        <p>
+          For exits, specify the visible link text, eg "More Info", and the route the link should go to. The route should
+          start with a "/", and can include route parameters, eg "/products/:productId". Use an exit type of "Global" if
+          you want the link to be visible on all pages of the app, not just the current one -- for example, site-wide
+          navigation.
+        </p>
+      </aside>
     </div>
 
     <h3>Forms</h3>
     <div formArrayName="forms" *ngFor="let form of routePropsForm.get('forms').controls; let fIdx = index">
       <div [formGroupName]="fIdx" [formGroup]="form">
-        <label>
+        <label class="route-prop">
           Exit Type:
           <select formControlName="exitType">
             <option *ngFor="let type of exitTypes" [ngValue]="type">{{ type }}</option>
           </select>
         </label>
-        <label>
+        <label class="route-prop">
           Button Text:
           <input type="text" formControlName="visibleText" (keyup)="_addFormProp(fIdx)">
         </label>
-        <label>
+        <label class="route-prop">
           Action:
           <input type="text" formControlName="action">
         </label>
         &nbsp; &nbsp;
-        Prototype:
-        <span formArrayName="visibleLocations">
-          <span *ngFor="let loc of form.controls.visibleLocations.controls; let lIdx = index;" [formGroup]="loc" style="margin-right: 1em;">
-            <label>
-              <input type="checkbox" [formControl]="loc.get('selected')">
-              {{ loc.get('label').value }}
-            </label>
+        <span *ngIf="hasPrototype">
+          Prototype:
+          <span formArrayName="visibleLocations">
+            <span *ngFor="let loc of form.controls.visibleLocations.controls; let lIdx = index;" [formGroup]="loc" style="margin-right: 1em;">
+              <label class="prototype">
+                <input type="checkbox" [formControl]="loc.get('selected')">
+                {{ loc.get('label').value }}
+              </label>
+            </span>
           </span>
         </span>
       </div>
@@ -38,28 +56,30 @@
     <h3>Exits</h3>
     <div formArrayName="exits" *ngFor="let exit of routePropsForm.get('exits').controls; let idx = index">
       <div [formGroupName]="idx" [formGroup]="exit">
-        <label>
+        <label class="route-prop">
           Exit Type:
           <select formControlName="exitType">
             <option *ngFor="let type of exitTypes" [ngValue]="type">{{ type }}</option>
           </select>
         </label>
-        <label>
+        <label class="route-prop">
           Link Text:
           <input type="text" formControlName="visibleText" (keyup)="_addExitProp(idx)">
         </label>
-        <label>
+        <label class="route-prop">
           Route:
           <input type="text" formControlName="action">
         </label>
         &nbsp; &nbsp;
-        Prototype:
-        <span formArrayName="visibleLocations">
-          <span *ngFor="let loc of exit.controls.visibleLocations.controls; let lIdx = index;" [formGroup]="loc" style="margin-right: 1em;">
-            <label>
-              <input type="checkbox" [formControl]="loc.get('selected')">
-              {{ loc.get('label').value }}
-            </label>
+        <span *ngIf="hasPrototype">
+          Prototype:
+          <span formArrayName="visibleLocations">
+            <span *ngFor="let loc of exit.controls.visibleLocations.controls; let lIdx = index;" [formGroup]="loc" style="margin-right: 1em;">
+              <label class="prototype">
+                <input type="checkbox" [formControl]="loc.get('selected')">
+                {{ loc.get('label').value }}
+              </label>
+            </span>
           </span>
         </span>
       </div>
@@ -72,25 +92,45 @@
     <h1>Current url: {{ currentURL }}</h1>
     <div formGroupName="action">
       <div>
-        <label>
+        <label class="form-prop">
           Action Name:
           <input type="text" formControlName="name">
         </label>
       </div>
       <div>
-        <label>
-          Description: <br>
-          <textarea id="description" formControlName="description"></textarea>
-        </label>
+        <label for="description">Description: </label><br>
+        <textarea id="description" formControlName="description"></textarea>
+        <aside>
+          <p>
+            Use the textarea to explain to the viewer what will happen when the form button is pressed, eg "Sends a
+            request to the API server specifying the product and cart info".
+          </p>
+          <p>
+            The action name and button text are carried over from the route properties form, and can be changed here if
+            needed.
+          </p>
+          <p>
+            You can optionally specify a route to redirect to after the main action of the form is done. For example, a
+            form that signs the user up for a newsletter might redirect to a "thank-you" page afterwards. If you leave it
+            blank, the user will stay on the current page.
+          </p>
+          <p>
+            Use the form inputs to specify the form fields that will be visible on the page along with the submit button.
+            For inputs of type "select", "checkbox", or "radio", use a comma-separated list in the "Value" property to
+            generate a list of options or boxes -- one for each item. You can specify any other HTML attributes you want
+            for the input in the "Attributes" field, complete with quotes, eg <code>class="form-control" maxlength="256"</code>
+          </p>
+        </aside>
+
       </div>
       <div>
-        <label>
+        <label class="form-prop">
           Button Text:
           <input type="text" formControlName="button">
         </label>
       </div>
       <div>
-        <label>
+        <label class="form-prop">
           Redirect to:
           <input type="text" formControlName="exit">
         </label>
@@ -99,21 +139,21 @@
     <h3>Form Inputs</h3>
     <div formArrayName="inputs" *ngFor="let input of formPropsForm.get('inputs').controls; let ff = index">
       <div [formGroupName]="ff">
-        <label>
+        <label class="input-prop">
           Input type:
           <select formControlName="type">
             <option *ngFor="let type of inputTypes" [ngValue]="type">{{ type }}</option>
           </select>
         </label>
-        <label>
+        <label class="input-prop">
           Label Text:
           <input type="text" formControlName="label" (keyup)="_addInputProp(ff)">
         </label>
-        <label>
+        <label class="input-prop">
           Value:
           <input type="text" formControlName="value">
         </label>
-        <label>
+        <label class="input-prop">
           Attributes:
           <input type="text" formControlName="attributes">
         </label>

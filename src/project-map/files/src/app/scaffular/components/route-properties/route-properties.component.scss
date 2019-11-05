@@ -1,4 +1,63 @@
 #description {
-  width: 500px;
+  width: 620px;
   height: 200px;
+
+  & + aside {
+    display: block;
+    position: relative;
+    float: right;
+    width: 400px;
+    font-weight: normal;
+    font-size: 11px;
+    color: #333;
+    background-color: #fff;
+    padding: 5px;
+    font-family: Helvetica, Arial, sans-serif;
+
+    &:before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      background-color: #333;
+      position: absolute;
+      top: 0;
+      left: -42px;
+    }
+
+    &:after {
+      content: '?';
+      font-weight: bold;
+      color: #ffcc00;
+      font-size: 25px;
+      position: absolute;
+      display: block;
+      width: 32px;
+      text-align: center;
+      top: -2px;
+      left: -42px;
+    }
+  }
+}
+
+label.route-prop, label.input-prop {
+  display: inline-block;
+  width: 210px;
+  text-align: left;
+  padding-right: 10px;
+
+  input:not([type=checkbox]), select {
+    width: 200px;
+  }
+}
+
+label.form-prop {
+  width: 620px;
+  text-align: right;
+
+  input {
+    width: 450px;
+    margin-left: 10px;
+  }
 }

@@ -42,7 +42,7 @@ export class ThemeHandlerComponent implements OnInit {
     this.getLocations();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   private getLocations() {
     if ( templateProps.hasOwnProperty('items') ) {
@@ -74,6 +74,8 @@ export class ThemeHandlerComponent implements OnInit {
       this.editing = ( 'edit' === params.get('mode') || !this.routeFound );
     });
     this.loadRoutePropsForm();
+    const htmlTag = document.getElementsByTagName('html')[0];
+    htmlTag.style.borderTop = '32px solid #000';
   }
 
   toggleEditing() {
@@ -180,11 +182,8 @@ export class ThemeHandlerComponent implements OnInit {
     routeExits.forEach((exit: Exit) => {
       exits.push(this.makeExitProp(exit));
     });
-    const emptyExits = Array
-      .apply(null, Array(Math.max(1, 5 - exits.length)))
-      .map(() => this.makeExitProp());
-
-    return exits.concat(emptyExits);
+    exits.push(this.makeExitProp());
+    return exits;
   }
 
   public addExitProp(index: number) {
