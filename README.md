@@ -3,7 +3,7 @@
 ### This software was designed to save you development time and money
 Did it help? Consider donating some of your savings towards further enhancements to the software!
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QZVW63UBEBQYU&source=url)
+[![patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bePatron?u=26073031)
 
 ### Summary
 
