@@ -22,7 +22,7 @@
                 <form *ngFor="let form of forms['general']">
                     <div class="pageForm">
                         <div [innerHTML]="templateBuilder.inputMocksToString(form, 'general') | safeHtml"></div>
-                        <button sc-injectable>{{ form.action.button.label }}</button>
+                        <button type="button" (click)="_showForm(form)">{{ form.action.button.label }}</button>
                     </div>
                 </form>
             </div>

@@ -31,7 +31,7 @@
                                 </dl>
                             </div>
                         </div>
-                        <button sc-injectable>{{ visibleText }}</button>
+                        <button {{ btn_attributes }}>{{ visibleText }}</button>
                     </div>
                 </form>
             </div>
