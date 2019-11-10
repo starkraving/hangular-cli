@@ -75,7 +75,7 @@ export class RoutePropertiesFromForm {
             visibleText: props.visibleText,
             routeLocations: props.visibleLocations
               .filter(loc => loc.selected)
-              .map(loc => loc.label)
+                .map(loc => (( 'general' !== loc.label ) ? loc.label : 'global'))
           });
           break;
       }
