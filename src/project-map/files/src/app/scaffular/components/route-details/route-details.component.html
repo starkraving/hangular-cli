@@ -1,39 +1,7 @@
 
-<div class="app">
-    <div class="nav-top d-flex justify-content-between">
-      <img alt="Costco Logo" src="/assets/images/costco-logo.png" class="flex-column">
-      <div class="flex-column" *ngIf="links['multi-search'] && links['multi-search'].length">
-        <form ngnoform action="{{ exit.route }}" *ngFor="let exit of links['multi-search']">
-          <input class="form-control d-inline w-auto" type="search" name="q" accesskey="/" list="search_presets">
-          <button class="btn ml-1" type="submit">{{ exit.visibleText }}</button>
-          <datalist id="search_presets">
-            <option value="pending events"></option>
-            <option value="flagged events"></option>
-          </datalist>
-        </form>
-      </div>
-      <div class="flex-column">
-        <a class="clickable settings" ng-reflect-router-link="/admin/settings" href="/admin/settings">
-          <i class="material-icons" aria-hidden="true">settings</i> Settings </a>
-        <a class="logout-link clickable">
-          <i class="material-icons" aria-hidden="true">exit_to_app</i> Logout </a>
-      </div>
-    </div>
-    <div class="nav-bar" *ngIf="links['global'] && links['global'].length">
-      <nav>
-        <ul class="menu">
-          <li *ngFor="let exit of links['global']">
-            <a [routerLink]="getRouteLink(exit.route)" [queryParams]="getRouteParams(exit.route)">
-              <i class="material-icons" aria-hidden="true">dashboard</i>
-              <span>{{ exit.visibleText }}</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-    <main>
-      <div class="container">
-        <h1>Current URL: {{ currentURL }}</h1>
+    <section>
+        <div>
+            <h1>Current URL: {{ currentURL }}</h1>
       <p>
         {{ description }}
       </p>
@@ -49,75 +17,31 @@
                 (click)="_showForm(undefined)">Finished
         </button>
       </div>
-      </div>
-      <div class="container" *ngIf="forms['general'] && forms['general'].length">
-        <h3>Forms</h3>
-        <form *ngFor="let form of forms['general']">
-          <div [innerHTML]="templateBuilder.inputMocksToString(form, 'general') | safeHtml"></div>
-          <div class="row text-right">
-            <button class="btn" type="button" (click)="_showForm(form)">{{ form.action.button.label }}</button>
-            <span *ngIf="links['form-extra'] && links['form-extra'].length">
-              <span *ngFor="let exit of links['form-extra']">
-                <a class="btn btn-secondary ml-1" [routerLink]="getRouteLink(exit.route)" [queryParams]="getRouteParams(exit.route)">{{ exit.visibleText }}</a>
-              </span>
-            </span>
-          </div>
-        </form>
-      </div>
-      <div class="container" *ngIf="links['general'] && links['general'].length">
-        <h3>Exits</h3>
-        <ul>
-          <li *ngFor="let exit of links['general']">
-            <a [routerLink]="getRouteLink(exit.route)" [queryParams]="getRouteParams(exit.route)">{{ exit.visibleText }}</a>
-          </li>
-        </ul>
-      </div>
-      <div *ngIf="links['list-item'] && links['list-item'].length">
-        <div class="admin-title">
-          <h3 class="d-inline-block">Items</h3>
-          <div class="extras float-right" *ngIf="links['list-extra'] && links['list-extra'].length">
-            <a class="btn btn-action ml-1" [routerLink]="getRouteLink(exit.route)" [queryParams]="getRouteParams(exit.route)" *ngFor="let exit of links['list-extra']">{{ exit.visibleText }}</a>
-          </div>
-          <div class="float-right" *ngIf="forms['search'] && forms['search'].length">
-            <form *ngFor="let form of forms['search']">
-              <div class="form-row">
-                <span class="d-flex" [innerHTML]="templateBuilder.inputMocksToString(form, 'search') | safeHtml"></span>
-                <div class="col">
-                  <button class="btn" type="button" (click)="_showForm(form)">{{ form.action.button.label }}</button>
-                </div>
-              </div>
-            </form>
-          </div>
+            <div *ngIf="forms['general'] && forms['general'].length">
+                <h3>Forms</h3>
+                <form *ngFor="let form of forms['general']">
+                    <div class="pageForm">
+                        <div [innerHTML]="templateBuilder.inputMocksToString(form, 'general') | safeHtml"></div>
+                        <button sc-injectable>{{ form.action.button.label }}</button>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="links['general'] && links['general'].length">
+                <h3>Exits</h3>
+                <ul>
+                    <li *ngFor="let exit of links['general']">
+                        <a [routerLink]="getRouteLink(exit.route)" [queryParams]="getRouteParams(exit.route)">{{ exit.visibleText }}</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <table class="table">
-          <thead>
-          <tr>
-            <th>Column</th>
-            <th></th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td *ngFor="let exit of links['list-item']">
-              <a [routerLink]="getRouteLink(exit.route)" [queryParams]="getRouteParams(exit.route)">{{ exit.visibleText }}</a>
-            </td>
-            <td class="text-right" *ngIf="forms['list-action'] && forms['list-action'].length">
-              <form class="d-inline-block" *ngFor="let form of forms['list-action']">
-                <div class="form-row">
-                  <span [innerHTML]="templateBuilder.inputMocksToString(form, 'list-action') | safeHtml"></span>
-                  <div class="col">
-                    <button class="button" type="button" (click)="_showForm(form)">{{ form.action.button.label }}</button>
-                  </div>
-                </div>
-              </form>
-            </td>
-            <td class="text-right" *ngIf="links['list-action'] && links['list-action'].length">
-              <a class="btn btn-action ml-1" [routerLink]="getRouteLink(exit.route)" [queryParams]="getRouteParams(exit.route)" *ngFor="let exit of links['list-action']">{{ exit.visibleText }}</a>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </main>
-</div>
+        <div *ngIf="links['global'] && links['global'].length">
+            <h3>Global Exits</h3>
+            <ul>
+                <li *ngFor="let exit of links['global']">
+                    <a [routerLink]="getRouteLink(exit.route)" [queryParams]="getRouteParams(exit.route)">{{ exit.visibleText }}</a>
+                </li>
+            </ul>
+        </div>
+    </section>
 
