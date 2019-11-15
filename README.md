@@ -7,7 +7,9 @@ Did it help? Consider donating some of your savings towards further enhancements
 
 ### Summary
 
-One of the toughest hurdles faced by Angular application developers is the "white screen of death"; it happens when you're just starting the project and haven't mapped it out fully --- or at all. Scaffular helps by giving you a browser-based interface to scope out the project's routes, including forms and form fields, links that will be visible on that route's screen, and links that will be visible on all screens. This has the added benefit of allowing you to preview the project with stakeholders before development starts in earnest, providing them with a fast and interactive way to give feedback when it's most critical.
+One of the toughest hurdles faced by Angular application developers is the "white screen of death"; it happens when you're just starting the project and haven't mapped it out fully --- or at all. You've installed all your packages, got the initial, empty project running; now you're staring at a white screen. What do you do now? Where do you start?
+
+Scaffular helps by giving you a browser-based interface to scope out the project's routes, including forms and form fields, links that will be visible on that route's screen, and links that will be visible on all screens. This has the added benefit of allowing you to preview the project with stakeholders before development starts in earnest, providing them with a fast and interactive way to give feedback when it's most critical.
 
 When you're satisfied that you have the project mapped out, a single `ng generate` command will register all your routes in app-router.module, register your components with app.module, update the outer app template with your defined global links, and generate component files and template files for each route, including route parameters, and reactive forms with all your fields. You can then `ng serve` the project and continue developing as you would normally.
 
